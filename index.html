@@ -24,11 +24,9 @@
         
         <div class="middle-section">
             <div class="side-ad"><iframe class="ad-frame" id="frame-left"></iframe></div>
-            
             <div class="player-container">
                 <iframe src="https://dadocric.st/player.php?id=ptvsp" allowfullscreen></iframe>
             </div>
-            
             <div class="side-ad"><iframe class="ad-frame" id="frame-right"></iframe></div>
         </div>
         
@@ -43,13 +41,17 @@
         function refreshAds() {
             const createHtml = (url) => `<html><body style='margin:0;display:flex;justify-content:center;align-items:center;'><script type='text/javascript' src='${url}'></script></body></html>`;
             
-            document.getElementById('frame-top').srcdoc = createHtml(ad1);
-            document.getElementById('frame-left').srcdoc = createHtml(ad3);
-            document.getElementById('frame-right').srcdoc = createHtml(ad3);
-            document.getElementById('frame-bottom').srcdoc = createHtml(ad2);
+            const ft = document.getElementById('frame-top');
+            const fl = document.getElementById('frame-left');
+            const fr = document.getElementById('frame-right');
+            const fb = document.getElementById('frame-bottom');
+
+            if(ft) ft.srcdoc = createHtml(ad1);
+            if(fl) fl.srcdoc = createHtml(ad3);
+            if(fr) fr.srcdoc = createHtml(ad3);
+            if(fb) fb.srcdoc = createHtml(ad2);
         }
 
-        // Run immediately and then every 2 minutes
         refreshAds();
         setInterval(refreshAds, 120000);
     </script>
