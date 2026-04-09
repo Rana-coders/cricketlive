@@ -5,76 +5,82 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cricket Live Pro</title>
     <style>
-        body { margin: 0; background: #000; color: #fff; font-family: sans-serif; overflow-x: hidden; text-align: center; }
-        .header { background: #1a7a3c; padding: 10px; font-weight: bold; font-size: 18px; border-bottom: 2px solid #f3a352; }
+        body { margin: 0; background: #000; color: #fff; font-family: sans-serif; text-align: center; overflow-x: hidden; }
+        .header { background: #1a7a3c; padding: 10px; font-weight: bold; border-bottom: 2px solid #f3a352; }
         
-        /* Main Container */
-        .main-layout { display: flex; flex-direction: column; align-items: center; width: 100%; }
-        
-        /* Ad Spaces */
-        .ad-row { width: 100%; min-height: 80px; background: #111; display: flex; justify-content: center; align-items: center; margin: 5px 0; overflow: hidden; }
-        .middle-section { display: flex; width: 100%; justify-content: center; align-items: stretch; }
-        .side-ad { width: 60px; background: #111; display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        
-        /* Player Box */
-        .player-container { flex-grow: 1; aspect-ratio: 16/9; background: #000; position: relative; max-width: 900px; }
+        /* Layout */
+        .ad-row { width: 100%; min-height: 90px; background: #111; margin: 5px 0; display: flex; justify-content: center; align-items: center; }
+        .middle-container { display: flex; width: 100%; justify-content: center; }
+        .side-ad { width: 50px; background: #111; overflow: hidden; display: flex; align-items: center; }
+        .player-box { flex-grow: 1; aspect-ratio: 16/9; background: #000; max-width: 800px; }
         iframe { width: 100%; height: 100%; border: none; }
 
-        .ad-frame { width: 100%; height: 100%; border: none; overflow: hidden; }
+        /* Hide empty ad boxes until loaded */
+        .ad-slot-inner { width: 100%; height: 100%; }
     </style>
 </head>
 <body>
 
     <div class="header">🏏 CRICKET LIVE PRO</div>
 
-    <div class="main-layout">
-        <div class="ad-row" id="top-ad-box">
-            <iframe class="ad-frame" id="frame-top"></iframe>
+    <div class="ad-row" id="top-ad"></div>
+
+    <div class="middle-container">
+        <div class="side-ad" id="left-ad"></div>
+
+        <div class="player-box">
+            <iframe src="https://dadocric.st/player.php?id=ptvsp" allowfullscreen></iframe>
         </div>
 
-        <div class="middle-section">
-            <div class="side-ad" id="left-ad-box">
-                <iframe class="ad-frame" id="frame-left"></iframe>
-            </div>
-
-            <div class="player-container">
-                <iframe src="https://dadocric.st/player.php?id=ptvsp" allowfullscreen></iframe>
-            </div>
-
-            <div class="side-ad" id="right-ad-box">
-                <iframe class="ad-frame" id="frame-right"></iframe>
-            </div>
-        </div>
-
-        <div class="ad-row" id="bottom-ad-box" style="min-height: 120px;">
-            <iframe class="ad-frame" id="frame-bottom"></iframe>
-        </div>
+        <div class="side-ad" id="right-ad"></div>
     </div>
 
-    <script>
-        // Aapke Ads ke links
-        const adLink1 = "https://www.highperformanceformat.com/705012f2ad202ea97b72a15e6a0fd49c/invoke.js"; // Old
-        const adLink2 = "https://pl29104437.profitablecpmratenetwork.com/43/c5/10/43c510acd9ef3c2ad300c298280682fe.js"; // Old
-        const adLink3 = "https://pl29104438.profitablecpmratenetwork.com/7b/3e/a3/7b3ea31962ea248a8ffdff420716cedf.js"; // New
+    <div class="ad-row" id="bottom-ad" style="min-height: 150px;"></div>
 
-        function refreshAds() {
-            console.log("Refreshing Ads...");
+    <script type="text/javascript">
+        // Ad Links
+        const ads = {
+            top: "https://www.highperformanceformat.com/705012f2ad202ea97b72a15e6a0fd49c/invoke.js",
+            bottom: "https://pl29104437.profitablecpmratenetwork.com/43/c5/10/43c510acd9ef3c2ad300c298280682fe.js",
+            sides: "https://pl29104438.profitablecpmratenetwork.com/7b/3e/a3/7b3ea31962ea248a8ffdff420716cedf.js"
+        };
+
+        function injectAds() {
+            console.log("Refreshing All Ads...");
             
-            // HTML content for Ad frames
-            const createAdHtml = (scriptUrl) => `<html><body style='margin:0;display:flex;justify-content:center;align-items:center;'><script type='text/javascript' src='${scriptUrl}'></script></body></html>`;
+            const slots = [
+                { id: 'top-ad', url: ads.top },
+                { id: 'bottom-ad', url: ads.bottom },
+                { id: 'left-ad', url: ads.sides },
+                { id: 'right-ad', url: ads.sides }
+            ];
 
-            // Refresh each frame
-            document.getElementById('frame-top').srcdoc = createAdHtml(adLink1);
-            document.getElementById('frame-left').srcdoc = createAdHtml(adLink3); // Side ad
-            document.getElementById('frame-right').srcdoc = createAdHtml(adLink3); // Side ad
-            document.getElementById('frame-bottom').srcdoc = createAdHtml(adLink2);
+            slots.forEach(slot => {
+                const container = document.getElementById(slot.id);
+                // Har refresh par naya iframe create karna sabse safe hai
+                container.innerHTML = ''; 
+                const ifrm = document.createElement("iframe");
+                ifrm.style.width = "100%";
+                ifrm.style.height = "100%";
+                ifrm.style.border = "none";
+                container.appendChild(ifrm);
+
+                const doc = ifrm.contentWindow.document;
+                doc.open();
+                doc.write(`
+                    <body style="margin:0; padding:0; display:flex; justify-content:center; align-items:center; background:transparent;">
+                        <script type="text/javascript" src="${slot.url}"><\/script>
+                    </body>
+                `);
+                doc.close();
+            });
         }
 
-        // Initial Load
-        refreshAds();
+        // Pehli baar load karein
+        injectAds();
 
-        // Har 2 minute (120000 ms) baad refresh
-        setInterval(refreshAds, 120000);
+        // Har 120 seconds (2 mins) baad ads refresh karein
+        setInterval(injectAds, 120000);
     </script>
 
 </body>
