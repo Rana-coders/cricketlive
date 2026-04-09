@@ -14,7 +14,6 @@
         .player-container { flex-grow: 1; aspect-ratio: 16/9; background: #000; position: relative; max-width: 900px; }
         iframe { width: 100%; height: 100%; border: none; }
         .ad-frame { width: 100%; height: 100%; border: none; overflow: hidden; }
-        #native-ad-container { width: 100%; max-width: 900px; margin: 20px auto; padding: 10px; }
     </style>
 </head>
 <body>
@@ -36,31 +35,22 @@
         <div class="ad-row" style="min-height: 120px;"><iframe class="ad-frame" id="frame-bottom"></iframe></div>
     </div>
 
-    <div id="native-ad-container">
-        <script async="async" data-cfasync="false" src="https://pl29105313.profitablecpmratenetwork.com/2d2f1eebb2450936243f2f9b4a2dc8f6/invoke.js"></script>
-        <div id="container-2d2f1eebb2450936243f2f9b4a2dc8f6"></div>
-    </div>
-
     <script>
-        // Aapke saare Ads ke links
         const ad1 = "https://www.highperformanceformat.com/705012f2ad202ea97b72a15e6a0fd49c/invoke.js";
         const ad2 = "https://pl29104437.profitablecpmratenetwork.com/43/c5/10/43c510acd9ef3c2ad300c298280682fe.js";
         const ad3 = "https://pl29104438.profitablecpmratenetwork.com/7b/3e/a3/7b3ea31962ea248a8ffdff420716cedf.js";
 
         function refreshAds() {
-            const createHtml = (url) => `<html><body style='margin:0;display:flex;justify-content:center;align-items:center;background:transparent;'><script type='text/javascript' src='${url}'></script></body></html>`;
+            const createHtml = (url) => `<html><body style='margin:0;display:flex;justify-content:center;align-items:center;'><script type='text/javascript' src='${url}'></script></body></html>`;
             
             document.getElementById('frame-top').srcdoc = createHtml(ad1);
             document.getElementById('frame-left').srcdoc = createHtml(ad3);
             document.getElementById('frame-right').srcdoc = createHtml(ad3);
             document.getElementById('frame-bottom').srcdoc = createHtml(ad2);
-            console.log("Ads Automatically Refreshed!");
         }
 
-        // Initial Load
+        // Run immediately and then every 2 minutes
         refreshAds();
-
-        // Har 2 minute baad ads refresh honge
         setInterval(refreshAds, 120000);
     </script>
 </body>
