@@ -3,31 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cricket Live Pro - Live Streaming</title>
-    <script type="text/javascript" src="https://www.highperformanceformat.com/705012f2ad202ea97b72a15e6a0fd49c/invoke.js"></script>
-    
+    <title>Cricket Live Pro</title>
     <style>
-        body { margin: 0; background: #000; color: #fff; font-family: sans-serif; }
-        .header { background: #1a7a3c; padding: 15px; text-align: center; font-weight: bold; font-size: 20px; }
-        .player-box { width: 100%; aspect-ratio: 16/9; background: #000; }
+        body { margin: 0; background: #000; color: #fff; font-family: sans-serif; text-align: center; }
+        .header { background: #1a7a3c; padding: 15px; font-weight: bold; border-bottom: 2px solid #f3a352; }
+        .player-box { width: 100%; aspect-ratio: 16/9; background: #000; margin: 10px 0; }
         iframe { width: 100%; height: 100%; border: none; }
-        .btn-box { padding: 15px; text-align: center; }
-        .btn { background: #f3a352; color: #000; padding: 15px 30px; border: none; border-radius: 5px; font-weight: bold; cursor: pointer; }
+        .ad-container { min-height: 100px; width: 100%; background: #111; margin: 10px 0; overflow: hidden; }
     </style>
 </head>
 <body>
 
     <div class="header">🏏 CRICKET LIVE PRO</div>
 
+    <div id="ad-top" class="ad-container">
+        <script type="text/javascript" src="//www.highperformanceformat.com/705012f2ad202ea97b72a15e6a0fd49c/invoke.js"></script>
+    </div>
+
     <div class="player-box">
         <iframe src="https://dadocric.st/player.php?id=ptvsp" allowfullscreen></iframe>
     </div>
 
-    <div class="btn-box">
-        <button class="btn" onclick="location.reload()">REFRESH STREAM</button>
+    <div id="ad-bottom" class="ad-container">
+        <script type="text/javascript" src="//pl29104437.profitablecpmratenetwork.com/43/c5/10/43c510acd9ef3c2ad300c298280682fe.js"></script>
     </div>
 
-    <script type="text/javascript" src="https://pl29104437.profitablecpmratenetwork.com/43/c5/10/43c510acd9ef3c2ad300c298280682fe.js"></script>
+    <script>
+        // Ads Refreshing Logic (Har 120 seconds baad)
+        setInterval(function() {
+            // Top Ad Refresh
+            const topAd = document.getElementById('ad-top');
+            const topContent = topAd.innerHTML;
+            topAd.innerHTML = ""; // Clear
+            topAd.innerHTML = topContent; // Reload Script
+            
+            // Bottom Ad Refresh
+            const bottomAd = document.getElementById('ad-bottom');
+            const bottomContent = bottomAd.innerHTML;
+            bottomAd.innerHTML = ""; // Clear
+            bottomAd.innerHTML = bottomContent; // Reload Script
+
+            console.log("Ads Refreshed Successfully!");
+        }, 120000); // 120000ms = 2 Minutes
+    </script>
 
 </body>
 </html>
