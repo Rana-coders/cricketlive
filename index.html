@@ -1,204 +1,515 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Social Trend Word Cloud — Free</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Syne:wght@700;800&display=swap');
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Space Grotesk',sans-serif;background:transparent}
-  h2.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
-  .wrap{padding:1.5rem 0}
-  .header{text-align:center;margin-bottom:2rem}
-  .header h1{font-family:'Syne',sans-serif;font-size:28px;font-weight:800;color:var(--color-text-primary);letter-spacing:-0.5px}
-  .header p{font-size:14px;color:var(--color-text-secondary);margin-top:6px}
-  .search-row{display:flex;gap:10px;margin-bottom:1.5rem}
-  .search-row input{flex:1;padding:10px 16px;border:1px solid var(--color-border-secondary);border-radius:var(--border-radius-md);font-family:inherit;font-size:15px;background:var(--color-background-primary);color:var(--color-text-primary);outline:none}
-  .search-row input:focus{border-color:#7F77DD}
-  .search-row button{padding:10px 22px;background:#534AB7;color:#fff;border:none;border-radius:var(--border-radius-md);font-family:inherit;font-weight:500;font-size:14px;cursor:pointer;white-space:nowrap;transition:background 0.2s}
-  .search-row button:hover{background:#7F77DD}
-  .search-row button:disabled{background:var(--color-border-tertiary);cursor:not-allowed}
-  .platforms{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:1.5rem}
-  .plat-card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:14px 10px 10px;min-height:200px;position:relative}
-  .plat-header{display:flex;align-items:center;gap:8px;margin-bottom:10px}
-  .plat-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px}
-  .plat-name{font-size:13px;font-weight:500;color:var(--color-text-primary)}
-  .cloud-area{width:100%;min-height:160px;position:relative;display:flex;flex-wrap:wrap;gap:6px;align-content:flex-start}
-  .word-tag{display:inline-block;border-radius:20px;padding:4px 10px;cursor:default;transition:transform 0.15s,opacity 0.15s;line-height:1.3;white-space:nowrap}
-  .word-tag:hover{transform:scale(1.08);opacity:0.9}
-  .status{font-size:13px;color:var(--color-text-secondary);text-align:center;padding:20px 0}
-  .loading-dots{display:inline-flex;gap:4px}
-  .loading-dots span{width:6px;height:6px;border-radius:50%;background:var(--color-text-secondary);animation:dot 1s infinite}
-  .loading-dots span:nth-child(2){animation-delay:.2s}
-  .loading-dots span:nth-child(3){animation-delay:.4s}
-  @keyframes dot{0%,80%,100%{transform:scale(0.6);opacity:0.4}40%{transform:scale(1);opacity:1}}
-  .ig{background:#E1306C15;border-color:#E1306C40}
-  .ig .plat-icon{background:#E1306C20}
-  .snap{background:#FFFC0015;border-color:#FFFC0040}
-  .snap .plat-icon{background:#FFFC0030}
-  .x-card{background:var(--color-background-secondary)}
-  .x-card .plat-icon{background:var(--color-background-tertiary)}
-  .fb{background:#1877F215;border-color:#1877F240}
-  .fb .plat-icon{background:#1877F220}
-  .legend{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;font-size:12px;color:var(--color-text-secondary);margin-top:1rem}
-  .legend-item{display:flex;align-items:center;gap:5px}
-  .legend-dot{width:10px;height:10px;border-radius:50%}
-  .topic-badge{display:inline-block;background:#534AB720;color:#534AB7;border-radius:12px;padding:3px 10px;font-size:12px;margin-bottom:8px}
-  @media(max-width:600px){.platforms{grid-template-columns:1fr 1fr}}
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;700&display=swap');
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #0d0d14;
+    color: #f0f0f5;
+    min-height: 100vh;
+    padding: 2rem 1.5rem 4rem;
+  }
+  header { text-align: center; margin-bottom: 2.5rem; }
+  header h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(26px, 5vw, 40px);
+    font-weight: 800;
+    background: linear-gradient(135deg, #a78bfa, #38bdf8, #34d399);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    letter-spacing: -1px;
+  }
+  header p { color: #777799; margin-top: 8px; font-size: 14px; }
+
+  .free-badge {
+    display: inline-block;
+    background: #34d39922;
+    color: #34d399;
+    border: 1px solid #34d39944;
+    border-radius: 100px;
+    padding: 3px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    margin-top: 10px;
+  }
+
+  .api-box {
+    max-width: 640px;
+    margin: 0 auto 2rem;
+    background: #1a1a24;
+    border: 1px solid #34d39933;
+    border-radius: 16px;
+    padding: 1.4rem 1.6rem;
+  }
+  .api-box label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    color: #34d399;
+    margin-bottom: 8px;
+  }
+  .api-row { display: flex; gap: 10px; }
+  .api-row input {
+    flex: 1;
+    padding: 11px 15px;
+    background: #0d0d14;
+    border: 1px solid #ffffff18;
+    border-radius: 10px;
+    color: #f0f0f5;
+    font-family: monospace;
+    font-size: 13px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .api-row input:focus { border-color: #7c6af7; }
+  .save-btn {
+    padding: 11px 20px;
+    background: #34d39922;
+    color: #34d399;
+    border: 1px solid #34d39955;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+    transition: background 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .save-btn:hover { background: #34d39933; }
+  .api-hint { font-size: 12px; color: #666688; margin-top: 8px; line-height: 1.6; }
+  .api-hint a { color: #a78bfa; text-decoration: none; }
+  .api-hint a:hover { text-decoration: underline; }
+
+  .steps-box {
+    max-width: 640px;
+    margin: 0 auto 2rem;
+    background: #1a1a24;
+    border: 1px solid #7c6af733;
+    border-radius: 16px;
+    padding: 1.2rem 1.6rem;
+    font-size: 13px;
+    color: #aaaacc;
+    line-height: 1.8;
+  }
+  .steps-box strong { color: #a78bfa; }
+  .steps-box .step { display: flex; gap: 10px; margin: 4px 0; }
+  .step-num {
+    width: 22px; height: 22px; background: #7c6af722; border: 1px solid #7c6af744;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #a78bfa; flex-shrink: 0; margin-top: 1px;
+  }
+
+  .search-wrap {
+    max-width: 640px;
+    margin: 0 auto 2.5rem;
+    display: flex;
+    gap: 12px;
+  }
+  .search-wrap input {
+    flex: 1;
+    padding: 14px 20px;
+    background: #1a1a24;
+    border: 1px solid #ffffff15;
+    border-radius: 14px;
+    color: #f0f0f5;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .search-wrap input:focus { border-color: #7c6af7; }
+  .search-wrap input::placeholder { color: #555577; }
+  .search-btn {
+    padding: 14px 28px;
+    background: linear-gradient(135deg, #7c6af7, #a78bfa);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s, transform 0.1s;
+  }
+  .search-btn:hover { opacity: 0.88; }
+  .search-btn:active { transform: scale(0.97); }
+  .search-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+
+  .topic-label {
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 13px;
+    color: #666688;
+  }
+  .topic-label strong { color: #a78bfa; font-size: 15px; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    max-width: 960px;
+    margin: 0 auto;
+  }
+  @media(max-width: 600px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: #1a1a24;
+    border: 1px solid #ffffff12;
+    border-radius: 18px;
+    padding: 1.2rem;
+    min-height: 220px;
+  }
+  .card-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #ffffff10;
+  }
+  .card-icon {
+    width: 34px; height: 34px; border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px; flex-shrink: 0;
+  }
+  .card-name { font-weight: 700; font-size: 15px; }
+  .card-sub  { font-size: 11px; color: #666688; margin-top: 1px; }
+
+  .ig-card   { border-color: #e1306c2a; }
+  .ig-icon   { background: linear-gradient(135deg,#833ab4,#e1306c,#f77737); }
+  .snap-card { border-color: #ffdd002a; }
+  .snap-icon { background: #ffdd0020; }
+  .x-card    { border-color: #ffffff1a; }
+  .x-icon    { background: #ffffff10; color: #fff; font-weight: 900; font-size: 15px; font-family: 'DM Sans', sans-serif; }
+  .fb-card   { border-color: #1877f22a; }
+  .fb-icon   { background: #1877f220; }
+
+  .cloud-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    align-content: flex-start;
+    min-height: 140px;
+  }
+  .word-pill {
+    display: inline-block;
+    border-radius: 100px;
+    padding: 4px 12px;
+    cursor: default;
+    white-space: nowrap;
+    opacity: 0;
+    animation: popIn 0.35s forwards;
+    transition: transform 0.15s;
+  }
+  .word-pill:hover { transform: scale(1.1); }
+  @keyframes popIn {
+    from { opacity: 0; transform: scale(0.75) translateY(4px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .placeholder { width: 100%; padding: 28px 0; text-align: center; color: #444466; font-size: 13px; }
+  .loading-row {
+    display: flex; align-items: center; gap: 10px;
+    padding: 28px 0; justify-content: center;
+    color: #666688; font-size: 13px; width: 100%;
+  }
+  .spinner {
+    width: 18px; height: 18px;
+    border: 2px solid #ffffff15;
+    border-top-color: #7c6af7;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .error-msg { color: #f87171; font-size: 13px; padding: 12px 0; text-align: center; width: 100%; line-height: 1.5; }
+
+  .legend {
+    display: flex; justify-content: center; gap: 20px;
+    flex-wrap: wrap; margin-top: 2rem;
+    font-size: 12px; color: #555577;
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .leg-dot { width: 9px; height: 9px; border-radius: 50%; }
+
+  footer { text-align: center; margin-top: 3rem; font-size: 12px; color: #333355; }
+
+  .status-saved {
+    display: inline-block;
+    background: #34d39922;
+    color: #34d399;
+    border-radius: 8px;
+    padding: 2px 10px;
+    font-size: 12px;
+    margin-left: 8px;
+    vertical-align: middle;
+  }
 </style>
+</head>
+<body>
 
-<h2 class="sr-only">Social Media Trend Word Cloud Generator — Enter a topic to see trending keywords across Instagram, Snapchat, X, and Facebook</h2>
+<header>
+  <h1>⚡ Social Trend Cloud</h1>
+  <p>Live trending keywords from Instagram, Snapchat, X &amp; Facebook</p>
+  <div class="free-badge">✅ 100% FREE — Google Gemini API</div>
+</header>
 
-<div class="wrap">
-  <div class="header">
-    <h1>Trend Word Cloud</h1>
-    <p>Enter any topic to discover trending keywords across all major platforms</p>
+<!-- Setup Guide -->
+<div class="steps-box">
+  <div style="font-weight:700;color:#a78bfa;margin-bottom:10px;font-size:13px;">📋 ONE-TIME SETUP (2 minutes)</div>
+  <div class="step"><div class="step-num">1</div><div>Jao → <a href="https://aistudio.google.com/app/apikey" target="_blank" style="color:#a78bfa">aistudio.google.com/app/apikey</a></div></div>
+  <div class="step"><div class="step-num">2</div><div>Google account se sign in karo (free)</div></div>
+  <div class="step"><div class="step-num">3</div><div><strong>"Create API Key"</strong> click karo</div></div>
+  <div class="step"><div class="step-num">4</div><div>Key copy karo aur neeche paste karo → Save karo</div></div>
+  <div class="step"><div class="step-num">5</div><div>Ab koi bhi topic search karo — free unlimited!</div></div>
+</div>
+
+<div class="api-box">
+  <label>🔑 Google Gemini API Key (Free) <span id="savedBadge" style="display:none" class="status-saved">✓ Saved</span></label>
+  <div class="api-row">
+    <input type="password" id="apiKey" placeholder="AIza..." />
+    <button class="save-btn" onclick="saveKey()">Save Key</button>
   </div>
-
-  <div class="search-row">
-    <input type="text" id="topicInput" placeholder="e.g. AI, Football, Fashion, Gaming..." />
-    <button id="searchBtn" onclick="runSearch()">Search Trends ↗</button>
-  </div>
-
-  <div id="topicLabel" style="display:none;text-align:center;margin-bottom:1rem"></div>
-
-  <div class="platforms">
-    <div class="plat-card ig" id="card-ig">
-      <div class="plat-header">
-        <div class="plat-icon">📸</div>
-        <span class="plat-name">Instagram</span>
-      </div>
-      <div class="cloud-area" id="cloud-ig"><div class="status">Enter a topic above</div></div>
-    </div>
-    <div class="plat-card snap" id="card-snap">
-      <div class="plat-header">
-        <div class="plat-icon">👻</div>
-        <span class="plat-name">Snapchat</span>
-      </div>
-      <div class="cloud-area" id="cloud-snap"><div class="status">Enter a topic above</div></div>
-    </div>
-    <div class="plat-card x-card" id="card-x">
-      <div class="plat-header">
-        <div class="plat-icon" style="font-weight:900;font-size:16px;color:var(--color-text-primary)">✕</div>
-        <span class="plat-name">X (Twitter)</span>
-      </div>
-      <div class="cloud-area" id="cloud-x"><div class="status">Enter a topic above</div></div>
-    </div>
-    <div class="plat-card fb" id="card-fb">
-      <div class="plat-header">
-        <div class="plat-icon">📘</div>
-        <span class="plat-name">Facebook</span>
-      </div>
-      <div class="cloud-area" id="cloud-fb"><div class="status">Enter a topic above</div></div>
-    </div>
-  </div>
-
-  <div class="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:#534AB7"></div> Very Trending</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#1D9E75"></div> Popular</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#BA7517"></div> Rising</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#888780"></div> Mentioned</div>
+  <div class="api-hint">
+    Free API key: <a href="https://aistudio.google.com/app/apikey" target="_blank">aistudio.google.com/app/apikey</a>
+    — No credit card. 15 requests/min free. Key sirf tumhare browser mein save hoti hai.
   </div>
 </div>
 
-<script>
-const platformColors = {
-  ig: ['#E1306C','#C13584','#833AB4','#F56040','#FCAF45'],
-  snap: ['#FFAA00','#E6960A','#CC8200','#FFD060','#B36B00'],
-  x: ['var(--color-text-primary)','#378ADD','#888780','#534AB7','#1D9E75'],
-  fb: ['#1877F2','#0C5DB5','#3A8EF7','#0A4B9E','#185FA5']
-};
+<div class="search-wrap">
+  <input type="text" id="topicInput" placeholder="Topic likho: AI, Football, Fashion, Gaming, Cricket..." />
+  <button class="search-btn" id="searchBtn" onclick="runSearch()">Search Trends →</button>
+</div>
 
-const trendLevels = [
-  {size:22,weight:700,color:'#534AB7'},
-  {size:19,weight:700,color:'#1D9E75'},
-  {size:16,weight:500,color:'#BA7517'},
-  {size:13,weight:500,color:'#888780'},
-  {size:12,weight:400,color:'#888780'}
+<div id="topicLabel" class="topic-label" style="display:none"></div>
+
+<div class="grid">
+  <div class="card ig-card">
+    <div class="card-head">
+      <div class="card-icon ig-icon">📸</div>
+      <div><div class="card-name">Instagram</div><div class="card-sub">Reels &amp; hashtags</div></div>
+    </div>
+    <div class="cloud-area" id="cloud-ig"><div class="placeholder">Topic enter karo upar ☝️</div></div>
+  </div>
+  <div class="card snap-card">
+    <div class="card-head">
+      <div class="card-icon snap-icon">👻</div>
+      <div><div class="card-name">Snapchat</div><div class="card-sub">Stories &amp; Spotlight</div></div>
+    </div>
+    <div class="cloud-area" id="cloud-snap"><div class="placeholder">Topic enter karo upar ☝️</div></div>
+  </div>
+  <div class="card x-card">
+    <div class="card-head">
+      <div class="card-icon x-icon">✕</div>
+      <div><div class="card-name">X (Twitter)</div><div class="card-sub">Trending hashtags</div></div>
+    </div>
+    <div class="cloud-area" id="cloud-x"><div class="placeholder">Topic enter karo upar ☝️</div></div>
+  </div>
+  <div class="card fb-card">
+    <div class="card-head">
+      <div class="card-icon fb-icon">📘</div>
+      <div><div class="card-name">Facebook</div><div class="card-sub">Groups &amp; viral posts</div></div>
+    </div>
+    <div class="cloud-area" id="cloud-fb"><div class="placeholder">Topic enter karo upar ☝️</div></div>
+  </div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="leg-dot" style="background:#a78bfa"></div>Very Trending (bara)</div>
+  <div class="legend-item"><div class="leg-dot" style="background:#34d399"></div>Popular</div>
+  <div class="legend-item"><div class="leg-dot" style="background:#fbbf24"></div>Rising</div>
+  <div class="legend-item"><div class="leg-dot" style="background:#555577"></div>Mentioned (chota)</div>
+</div>
+
+<footer>Powered by Google Gemini 2.0 Flash + Google Search Grounding — 100% Free</footer>
+
+<script>
+const COLORS = {
+  ig:   ['#e1306c','#f77737','#c13584','#833ab4','#fd1d1d'],
+  snap: ['#ffdd00','#ffaa00','#e6b800','#cc9900','#ffd050'],
+  x:    ['#e0e0ff','#a0a0cc','#7c6af7','#38bdf8','#aaaaaa'],
+  fb:   ['#4aa3f5','#1877f2','#60c0ff','#0c5db5','#185fa5']
+};
+const SIZES = [26, 21, 17, 14, 12];
+
+const PLATFORMS = [
+  {
+    id: 'ig',
+    label: 'Instagram',
+    query: (t) => `What is currently trending on Instagram about "${t}"? List the most viral hashtags, Reels topics, trending sounds, popular content themes, and viral keywords related to "${t}" on Instagram right now in 2025. Focus on actual trending items.`
+  },
+  {
+    id: 'snap',
+    label: 'Snapchat',
+    query: (t) => `What is currently trending on Snapchat about "${t}"? List trending Spotlight content, popular Stories topics, viral lenses or filters, trending keywords and phrases related to "${t}" on Snapchat right now in 2025.`
+  },
+  {
+    id: 'x',
+    label: 'X Twitter',
+    query: (t) => `What is currently trending on X (Twitter) about "${t}"? List the most popular hashtags, viral tweet topics, trending discussions, popular accounts and keywords related to "${t}" trending on X/Twitter right now in 2025.`
+  },
+  {
+    id: 'fb',
+    label: 'Facebook',
+    query: (t) => `What is currently trending on Facebook about "${t}"? List viral post topics, popular group discussions, trending pages, viral content themes and keywords related to "${t}" on Facebook right now in 2025.`
+  }
 ];
+
+function saveKey() {
+  const k = document.getElementById('apiKey').value.trim();
+  if (!k) { alert('API key paste karo pehle!'); return; }
+  if (!k.startsWith('AIza')) { alert('Yeh Gemini key nahi lagti. "AIza" se shuru honi chahiye.'); return; }
+  localStorage.setItem('gemini_key', k);
+  document.getElementById('savedBadge').style.display = 'inline-block';
+  alert('✅ Key save ho gayi! Ab topic search karo.');
+}
+
+function getKey() {
+  return localStorage.getItem('gemini_key') || document.getElementById('apiKey').value.trim();
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const saved = localStorage.getItem('gemini_key');
+  if (saved) {
+    document.getElementById('apiKey').value = saved;
+    document.getElementById('savedBadge').style.display = 'inline-block';
+  }
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.activeElement.id === 'topicInput') runSearch();
+});
 
 async function runSearch() {
   const topic = document.getElementById('topicInput').value.trim();
   if (!topic) { document.getElementById('topicInput').focus(); return; }
 
+  const key = getKey();
+  if (!key || !key.startsWith('AIza')) {
+    alert('❌ Pehle Gemini API key enter karo aur Save karo!');
+    document.getElementById('apiKey').focus();
+    return;
+  }
+
   const btn = document.getElementById('searchBtn');
   btn.disabled = true;
   btn.textContent = 'Searching...';
 
-  const label = document.getElementById('topicLabel');
-  label.style.display = 'block';
-  label.innerHTML = `<span class="topic-badge">Topic: ${topic}</span>`;
+  const lbl = document.getElementById('topicLabel');
+  lbl.style.display = 'block';
+  lbl.innerHTML = `Trending results for: <strong>"${topic}"</strong>`;
 
-  ['ig','snap','x','fb'].forEach(p => {
-    document.getElementById('cloud-'+p).innerHTML = `<div class="status"><div class="loading-dots"><span></span><span></span><span></span></div></div>`;
+  PLATFORMS.forEach(p => {
+    document.getElementById('cloud-' + p.id).innerHTML =
+      `<div class="loading-row"><div class="spinner"></div>Searching ${p.label}...</div>`;
   });
 
-  const platformNames = {
-    ig: 'Instagram',
-    snap: 'Snapchat',
-    x: 'X Twitter',
-    fb: 'Facebook'
-  };
+  await Promise.all(PLATFORMS.map(p => fetchAndRender(p, topic, key)));
 
-  const promises = Object.keys(platformNames).map(async (key) => {
-    try {
-      const result = await fetchTrends(topic, platformNames[key]);
-      renderCloud(key, result);
-    } catch(e) {
-      document.getElementById('cloud-'+key).innerHTML = `<div class="status" style="color:var(--color-text-danger,#E24B4A)">Failed to load</div>`;
-    }
-  });
-
-  await Promise.all(promises);
   btn.disabled = false;
-  btn.textContent = 'Search Trends ↗';
+  btn.textContent = 'Search Trends →';
 }
 
-async function fetchTrends(topic, platform) {
-  const res = await fetch("https://api.anthropic.com/v1/messages", {
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body: JSON.stringify({
-      model:"claude-sonnet-4-20250514",
-      max_tokens:1000,
-      tools:[{type:"web_search_20250305",name:"web_search"}],
-      system:`You are a social media trend analyst. The user gives you a topic and a platform. Search the web for what is trending about that topic on the given platform RIGHT NOW. Extract 18-24 trending keywords, hashtags, phrases, and topics. Respond ONLY with a valid JSON array of objects, no markdown, no explanation. Each object: {"word":"string","weight":1-5} where weight 5 = most trending, 1 = barely mentioned. Include hashtags (with #), short phrases, and single keywords. Mix sizes.`,
-      messages:[{role:"user",content:`Topic: "${topic}" | Platform: ${platform}. Find what is currently trending about this topic on ${platform}. Return ONLY JSON array.`}]
-    })
-  });
+async function fetchAndRender(platform, topic, key) {
+  const area = document.getElementById('cloud-' + platform.id);
+  try {
+    const words = await fetchTrends(platform, topic, key);
+    renderCloud(area, words, platform.id);
+  } catch(err) {
+    area.innerHTML = `<div class="error-msg">⚠️ Error: ${err.message}<br><small>API key check karo ya thodi der mein dobara try karo</small></div>`;
+  }
+}
+
+async function fetchTrends(platform, topic, key) {
+  const systemPrompt = `You are a social media trend analyst. The user asks about trending content on a specific platform. 
+Use Google Search to find REAL current trending data. 
+Respond ONLY with a raw JSON array — no markdown, no explanation, no code blocks.
+Format: [{"word":"#trending","weight":5},{"word":"keyword","weight":3}]
+Weight: 5=most viral/trending, 4=very popular, 3=popular, 2=rising, 1=mentioned.
+Include 16-22 items: mix of hashtags (with #), short phrases (2-3 words), single keywords.`;
+
+  const userPrompt = platform.query(topic) + `\n\nRespond ONLY with JSON array. No text before or after.`;
+
+  const res = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${key}`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: systemPrompt }] },
+        contents: [{ parts: [{ text: userPrompt }] }],
+        tools: [{ google_search: {} }],
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 1000
+        }
+      })
+    }
+  );
+
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    const msg = err.error?.message || `HTTP ${res.status}`;
+    if (res.status === 400) throw new Error('Invalid API key — Gemini console se naya key lo');
+    if (res.status === 429) throw new Error('Rate limit — 1 minute wait karo');
+    throw new Error(msg);
+  }
+
   const data = await res.json();
-  let text = data.content.filter(b=>b.type==='text').map(b=>b.text).join('');
-  text = text.replace(/```json|```/g,'').trim();
-  const start = text.indexOf('[');
-  const end = text.lastIndexOf(']');
-  if(start===-1||end===-1) throw new Error('No JSON');
-  return JSON.parse(text.slice(start,end+1));
+  const raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  const clean = raw.replace(/```json|```/g, '').trim();
+  const start = clean.indexOf('[');
+  const end = clean.lastIndexOf(']');
+  if (start === -1 || end === -1) {
+    // Fallback: parse any words from response
+    return parseFallback(clean, topic);
+  }
+  try {
+    return JSON.parse(clean.slice(start, end + 1));
+  } catch(e) {
+    return parseFallback(clean, topic);
+  }
 }
 
-function renderCloud(platform, words) {
-  const area = document.getElementById('cloud-'+platform);
+function parseFallback(text, topic) {
+  // Extract hashtags and words as fallback
+  const hashtags = (text.match(/#\w+/g) || []).map((w,i) => ({ word: w, weight: 5 - (i % 4) }));
+  const words = text.match(/\b[A-Z][a-zA-Z]+(?:\s[A-Z][a-zA-Z]+)?\b/g) || [];
+  const wordItems = words.slice(0, 12).map((w,i) => ({ word: w, weight: 3 - (i % 3) }));
+  const all = [...hashtags, ...wordItems];
+  if (all.length === 0) return [{ word: topic, weight: 5 }, { word: '#trending', weight: 4 }];
+  return all.slice(0, 20);
+}
+
+function renderCloud(area, words, platformId) {
   area.innerHTML = '';
-  const colors = platformColors[platform];
-  const shuffled = [...words].sort(()=>Math.random()-0.5);
-  shuffled.forEach((item,i) => {
-    const level = trendLevels[Math.min(5-item.weight, trendLevels.length-1)];
-    const tag = document.createElement('span');
-    tag.className = 'word-tag';
-    tag.textContent = item.word;
-    tag.style.fontSize = level.size+'px';
-    tag.style.fontWeight = level.weight;
-    tag.style.color = colors[i % colors.length];
-    tag.style.background = colors[i % colors.length]+'18';
-    tag.style.border = `0.5px solid ${colors[i % colors.length]}40`;
-    tag.style.animationDelay = (i*0.04)+'s';
-    tag.style.opacity = '0';
-    tag.style.transform = 'translateY(8px)';
-    tag.style.transition = `opacity 0.3s ${i*0.04}s, transform 0.3s ${i*0.04}s`;
-    area.appendChild(tag);
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{
-      tag.style.opacity='1';
-      tag.style.transform='translateY(0)';
-    }));
+  const colors = COLORS[platformId];
+  const shuffled = [...words].sort(() => Math.random() - 0.5);
+  shuffled.forEach((item, i) => {
+    const w = Math.max(1, Math.min(5, Number(item.weight) || 3));
+    const sizeIdx = 5 - w;
+    const pill = document.createElement('span');
+    pill.className = 'word-pill';
+    pill.textContent = item.word;
+    pill.style.fontSize = SIZES[sizeIdx] + 'px';
+    pill.style.fontWeight = w >= 4 ? '700' : w >= 3 ? '500' : '400';
+    const color = colors[i % colors.length];
+    pill.style.color = color;
+    pill.style.background = color + '18';
+    pill.style.border = `1px solid ${color}40`;
+    pill.style.animationDelay = (i * 0.045) + 's';
+    area.appendChild(pill);
   });
 }
-
-document.getElementById('topicInput').addEventListener('keydown', e => {
-  if(e.key==='Enter') runSearch();
-});
 </script>
+</body>
+</html>
